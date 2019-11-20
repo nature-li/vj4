@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import uuid
 
 from vj4 import app
 from vj4 import constant
@@ -85,6 +86,32 @@ class UserRegisterWithCodeHandler(base.Handler):
     await user.add(uid, uname, password, doc['mail'], self.remote_ip)
     await token.delete(code, token.TYPE_REGISTRATION)
     await self.update_session(new_saved=False, uid=uid)
+    self.json_or_redirect(self.reverse_url('domain_main'))
+
+
+@app.route('/register-private', 'user_register_private', global_route=True)
+class UserRegisterPrivateHandler(base.Handler):
+  TITLE = 'user_register_private'
+
+  @base.require_priv(builtin.PRIV_REGISTER_PRIVATE)
+  @base.route_argument
+  @base.sanitize
+  async def get(self):
+    self.render('user_register_private.html')
+
+  @base.require_priv(builtin.PRIV_REGISTER_PRIVATE)
+  @base.route_argument
+  @base.post_argument
+  @base.sanitize
+  async def post(self, *, uname: str, password: str, verify_password: str):
+    mail = str(uuid.uuid4()) + '@vijos.test'
+    validator.check_mail(mail)
+    if await user.get_by_mail(mail):
+      raise error.UserAlreadyExistError(mail)
+    if password != verify_password:
+      raise error.VerifyPasswordError()
+    uid = await system.inc_user_counter()
+    await user.add(uid, uname, password, mail, self.remote_ip)
     self.json_or_redirect(self.reverse_url('domain_main'))
 
 

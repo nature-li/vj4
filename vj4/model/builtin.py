@@ -82,6 +82,9 @@ PERM_CREATE_TRAINING = 1 << 47
 PERM_EDIT_TRAINING = 1 << 48
 PERM_EDIT_TRAINING_SELF = 1 << 49
 
+# User Manager
+PERM_EDIT_REGISTERED_USER = 1 << 50
+
 PERM_ALL = -1
 
 Permission = collections.namedtuple('Permission',
@@ -147,6 +150,7 @@ PERMS = [
     Permission('perm_training', PERM_CREATE_TRAINING, 'Create training plans'),
     Permission('perm_training', PERM_EDIT_TRAINING, 'Edit training plans'),
     Permission('perm_training', PERM_EDIT_TRAINING_SELF, 'Edit own training plans'),
+    Permission('user_manager', PERM_EDIT_REGISTERED_USER, 'Edit all users'),
 ]
 
 PERMS_BY_FAMILY = collections.OrderedDict(
@@ -175,6 +179,7 @@ PRIV_CREATE_FILE = 1 << 16
 PRIV_UNLIMITED_QUOTA = 1 << 17
 PRIV_DELETE_FILE = 1 << 18
 PRIV_DELETE_FILE_SELF = 1 << 19
+PRIV_REGISTER_PRIVATE = 1 << 20
 PRIV_ALL = -1
 
 DEFAULT_PRIV = PRIV_USER_PROFILE | PRIV_CREATE_DOMAIN | PRIV_CREATE_FILE | PRIV_DELETE_FILE_SELF
