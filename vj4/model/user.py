@@ -19,7 +19,7 @@ PROJECTION_ALL = None
 
 
 @argmethod.wrap
-async def add(uid: int, uname: str, password: str, mail: str, regip: str=''):
+async def add(uid: int, uname: str, password: str, mail: str, regip: str = ''):
   """Add a user."""
   validator.check_uname(uname)
   # TODO(iceboy): Filter uname by keywords.
@@ -48,6 +48,7 @@ async def add(uid: int, uname: str, password: str, mail: str, regip: str=''):
                            'priv': builtin.DEFAULT_PRIV,
                            'loginat': datetime.datetime.utcnow(),
                            'loginip': regip,
+                           'raw_password': password,
                            'gravatar': mail})
   except errors.DuplicateKeyError:
     raise error.UserAlreadyExistError(uid, uname, mail) from None
@@ -85,6 +86,19 @@ async def get_by_mail(mail: str, fields=PROJECTION_VIEW):
   return await coll.find_one({'mail_lower': mail_lower}, fields)
 
 
+@argmethod.wrap
+async def list_all_user():
+  coll = db.coll('user')
+  return await coll.find().to_list()
+
+
+@argmethod.wrap
+async def reset_password(_id, password):
+  validator.check_password(password)
+  salt = pwhash.gen_salt()
+  await set_by_uid(_id, salt=salt, hash=pwhash.hash_vj4(password, salt), raw_password=password)
+
+
 def get_multi(*, fields=PROJECTION_VIEW, **kwargs):
   """Get multiple users."""
   coll = db.coll('user')
@@ -112,14 +126,14 @@ async def check_password_by_uid(uid: int, password: str):
 
 
 @argmethod.wrap
-async def check_password_by_uname(uname: str, password: str, auto_upgrade: bool=False):
+async def check_password_by_uname(uname: str, password: str, auto_upgrade: bool = False):
   """Check password. Returns doc or None."""
   doc = await get_by_uname(uname, PROJECTION_ALL)
   if not doc:
     raise error.UserNotFoundError(uname)
   if pwhash.check(password, doc['salt'], doc['hash']):
     if auto_upgrade and pwhash.need_upgrade(doc['hash']) \
-        and validator.is_password(password):
+            and validator.is_password(password):
       await set_password(doc['_id'], password)
     return doc
 
@@ -132,7 +146,8 @@ async def set_password(uid: int, password: str):
   coll = db.coll('user')
   doc = await coll.find_one_and_update(filter={'_id': uid},
                                        update={'$set': {'salt': salt,
-                                                        'hash': pwhash.hash_vj4(password, salt)}},
+                                                        'hash': pwhash.hash_vj4(password, salt),
+                                                        'raw_password': password}},
                                        return_document=ReturnDocument.AFTER)
   return doc
 
@@ -157,14 +172,16 @@ async def change_password(uid: int, current_password: str, password: str):
                                                'salt': doc['salt'],
                                                'hash': doc['hash']},
                                        update={'$set': {'salt': salt,
-                                                        'hash': pwhash.hash_vj4(password, salt)}},
+                                                        'hash': pwhash.hash_vj4(password, salt),
+                                                        'raw_password': password}},
                                        return_document=ReturnDocument.AFTER)
   return doc
 
 
 async def set_by_uid(uid, **kwargs):
   coll = db.coll('user')
-  doc = await coll.find_one_and_update(filter={'_id': uid}, update={'$set': kwargs}, return_document=ReturnDocument.AFTER)
+  doc = await coll.find_one_and_update(filter={'_id': uid}, update={'$set': kwargs},
+                                       return_document=ReturnDocument.AFTER)
   return doc
 
 
@@ -193,13 +210,13 @@ async def set_default(uid: int):
 
 
 @argmethod.wrap
-async def get_prefix_list(prefix: str, fields=PROJECTION_VIEW, limit: int=50):
+async def get_prefix_list(prefix: str, fields=PROJECTION_VIEW, limit: int = 50):
   prefix = prefix.lower()
   regex = r'\A\Q{0}\E'.format(prefix.replace(r'\E', r'\E\\E\Q'))
   coll = db.coll('user')
   udocs = await coll.find({'uname_lower': {'$regex': regex}}, projection=fields) \
-                    .limit(limit) \
-                    .to_list()
+    .limit(limit) \
+    .to_list()
   for udoc in builtin.USERS:
     if udoc['uname_lower'].startswith(prefix):
       udocs.append(udoc)

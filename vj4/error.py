@@ -110,6 +110,12 @@ class UserAlreadyExistError(ForbiddenError):
     return 'User {0} already exists.'
 
 
+class UserNotExistError(ForbiddenError):
+  @property
+  def message(self):
+    return 'User {0} not exists.'
+
+
 class LoginError(ForbiddenError):
   @property
   def message(self):

@@ -115,6 +115,54 @@ class UserRegisterPrivateHandler(base.Handler):
     self.json_or_redirect(self.reverse_url('domain_main'))
 
 
+@app.route('/private-user-list', 'private-user-list', global_route=True)
+class PrivateUserList(base.Handler):
+  TITLE = 'private-user-list'
+
+  @base.require_priv(builtin.PRIV_REGISTER_PRIVATE)
+  @base.route_argument
+  @base.sanitize
+  async def get(self):
+    users = await user.list_all_user()
+    users.reverse()
+    self.render('user_list_private.html', users=users)
+
+
+@app.route('/private-reset-password', 'private-reset-password', global_route=True)
+class PrivateResetPassword(base.Handler):
+  TITLE = 'private-reset-password'
+
+  @base.require_priv(builtin.PRIV_REGISTER_PRIVATE)
+  @base.route_argument
+  @base.post_argument
+  @base.sanitize
+  async def post(self, *, _id: int, password: str, verify_password: str):
+    if password != verify_password:
+      raise error.VerifyPasswordError()
+    await user.reset_password(_id, password)
+    self.json_or_redirect('/private-user-list')
+
+
+@app.route('/private-add-user', 'private-add-user', global_route=True)
+class PrivateAddUser(base.Handler):
+  TITLE = 'private-add-user'
+
+  @base.require_priv(builtin.PRIV_REGISTER_PRIVATE)
+  @base.route_argument
+  @base.post_argument
+  @base.sanitize
+  async def post(self, *, uname: str, password: str, verify_password: str):
+    mail = str(uuid.uuid4()) + '@vijos.test'
+    validator.check_mail(mail)
+    if await user.get_by_mail(mail):
+      raise error.UserAlreadyExistError(mail)
+    if password != verify_password:
+      raise error.VerifyPasswordError()
+    uid = await system.inc_user_counter()
+    await user.add(uid, uname, password, mail, self.remote_ip)
+    self.json_or_redirect('/private-user-list')
+
+
 @app.route('/lostpass', 'user_lostpass', global_route=True)
 class UserLostpassHandler(base.Handler):
   @base.require_priv(builtin.PRIV_REGISTER_USER)

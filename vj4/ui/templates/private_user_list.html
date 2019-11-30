@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div style="width: 80%; margin: 50px auto 0;">
+        <form action="/private-add-user" method="POST" autocomplete="off">
+            账号：<input type="text" name="uname"/>
+            密码：<input type="password" name="password"/>
+            确认密码：<input type="password" name="verify_password"/>
+            <input type="submit" value="添加用户"/>
+        </form>
+    </div>
+
+    <div style="width: 80%; margin: 0 auto;">
+        <table style="width: 100%;">
+            <caption>用户列表</caption>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>邮箱</th>
+                <th>账号</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user._id }}</td>
+                    <td>{{ user.mail }}</td>
+                    <td>{{ user.uname }}</td>
+                    <td>
+                        <form action="/private-reset-password" method="POST" autocomplete="off">
+                            <input type="text" name="_id" value="{{ user._id }}" hidden/>
+                            密码：<input type="password" name="password"/>
+                            确认密码：<input type="password" name="verify_password"/>
+                            <input type="submit" value="重置密码"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

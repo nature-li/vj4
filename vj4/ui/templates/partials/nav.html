@@ -85,7 +85,7 @@
             {% if handler.has_perm(vj4.model.builtin.PERM_EDIT_REGISTERED_USER) %}
                 <li class="menu__seperator"></li>
                 <li class="menu__item">
-                    <a href="{{ reverse_url('user_register_private') }}" class="menu__link">
+                    <a href="{{ reverse_url('private-user-list') }}" class="menu__link">
                       <span class="icon icon-account--circle"></span> {{ _('Register') }}
                     </a>
                 </li>

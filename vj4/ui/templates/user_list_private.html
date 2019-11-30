@@ -1,0 +1,41 @@
+{% extends "layout/immersive.html" %}
+{% block content %}
+    <div style="width: 80%; margin: 20px auto 50px;">
+        <form action="/private-add-user" method="POST">
+            账号：<input type="text" name="uname"/>
+            密码：<input type="password" name="password"/>
+            确认密码：<input type="password" name="verify_password"/>
+            <input type="submit" value="添加用户" style="background: transparent; border: 0; color: #fff;"/>
+        </form>
+    </div>
+
+    <div style="width: 80%; margin: 0 auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style=" border-collapse: collapse; padding: 5px; text-align: left;">id</th>
+                <th style=" border-collapse: collapse; padding: 5px; text-align: left;">邮箱</th>
+                <th style=" border-collapse: collapse; padding: 5px; text-align: left;">账号</th>
+                <th style=" border-collapse: collapse; padding: 5px; text-align: left;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td style=" border-collapse: collapse; padding: 5px; text-align: left;">{{ user._id }}</td>
+                    <td style=" border-collapse: collapse; padding: 5px; text-align: left;">{{ user.mail }}</td>
+                    <td style=" border-collapse: collapse; padding: 5px; text-align: left;">{{ user.uname }}</td>
+                    <td style=" border-collapse: collapse; padding: 5px; text-align: left;">
+                        <form action="/private-reset-password" method="POST">
+                            <input type="text" name="_id" value="{{ user._id }}" hidden/>
+                            密码：<input type="password" name="password"/>
+                            确认密码：<input type="password" name="verify_password"/>
+                            <input type="submit" value="重置密码" style="background: transparent; color: #fff; border: 0;"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
