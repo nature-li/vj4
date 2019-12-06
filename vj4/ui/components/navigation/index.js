@@ -40,9 +40,10 @@ class Navigation {
     this.$navRow = $nav.children('.row');
     this.$navShadow = $navShadow;
     this.floating = new MultipleStateContainer(this.updateFloating.bind(this), true);
-    this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this));
+    this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this), true);
     this.expanded = new MultipleStateContainer(this.updateExpandState.bind(this));
     this.setFloating();
+    this.setLogoVisibility();
   }
 
   setFloating() {
@@ -69,6 +70,12 @@ class Navigation {
     //   this.$navShadow.removeClass('floating');
     //   $('body').removeClass('nav--floating');
     // }
+  }
+
+  setLogoVisibility() {
+    if (!this.$nav.hasClass('showlogo')) {
+      this.$nav.addClass('showlogo')
+    }
   }
 
   updateLogoVisibility(state) {
