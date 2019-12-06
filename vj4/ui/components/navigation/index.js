@@ -39,21 +39,36 @@ class Navigation {
     this.$nav = $nav;
     this.$navRow = $nav.children('.row');
     this.$navShadow = $navShadow;
-    this.floating = new MultipleStateContainer(this.updateFloating.bind(this));
+    this.floating = new MultipleStateContainer(this.updateFloating.bind(this), true);
     this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this));
     this.expanded = new MultipleStateContainer(this.updateExpandState.bind(this));
+    this.setFloating();
+  }
+
+  setFloating() {
+    if (!this.$nav.hasClass('floating')) {
+      this.$nav.addClass('floating');
+    }
+
+    if (!this.$navShadow.hasClass('floating')) {
+      this.$navShadow.addClass('floating');
+    }
+
+    if (!$('body').hasClass('nav--floating')) {
+      $('body').addClass('nav--floating');
+    }
   }
 
   updateFloating(state) {
-    if (state) {
-      this.$nav.addClass('floating');
-      this.$navShadow.addClass('floating');
-      $('body').addClass('nav--floating');
-    } else {
-      this.$nav.removeClass('floating');
-      this.$navShadow.removeClass('floating');
-      $('body').removeClass('nav--floating');
-    }
+    // if (state) {
+    //   this.$nav.addClass('floating');
+    //   this.$navShadow.addClass('floating');
+    //   $('body').addClass('nav--floating');
+    // } else {
+    //   this.$nav.removeClass('floating');
+    //   this.$navShadow.removeClass('floating');
+    //   $('body').removeClass('nav--floating');
+    // }
   }
 
   updateLogoVisibility(state) {
