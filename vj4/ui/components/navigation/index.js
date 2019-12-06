@@ -57,11 +57,11 @@ class Navigation {
   }
 
   updateLogoVisibility(state) {
-    if (state) {
-      this.$nav.addClass('showlogo');
-    } else {
-      this.$nav.removeClass('showlogo');
-    }
+    // if (state) {
+    //   this.$nav.addClass('showlogo');
+    // } else {
+    //   this.$nav.removeClass('showlogo');
+    // }
   }
 
   updateExpandWidthImmediate() {
