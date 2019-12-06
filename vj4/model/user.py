@@ -19,7 +19,7 @@ PROJECTION_ALL = None
 
 
 @argmethod.wrap
-async def add(uid: int, uname: str, password: str, mail: str, regip: str = ''):
+async def add(uid: int, uname: str, password: str, mail: str, regip: str=''):
   """Add a user."""
   validator.check_uname(uname)
   # TODO(iceboy): Filter uname by keywords.
@@ -86,17 +86,15 @@ async def get_by_mail(mail: str, fields=PROJECTION_VIEW):
   return await coll.find_one({'mail_lower': mail_lower}, fields)
 
 
-@argmethod.wrap
 async def list_all_user():
   coll = db.coll('user')
   return await coll.find().to_list()
 
 
-@argmethod.wrap
-async def reset_password(_id, password):
+async def reset_password(uid, password):
   validator.check_password(password)
   salt = pwhash.gen_salt()
-  await set_by_uid(_id, salt=salt, hash=pwhash.hash_vj4(password, salt), raw_password=password)
+  await set_by_uid(uid, salt=salt, hash=pwhash.hash_vj4(password, salt), raw_password=password)
 
 
 def get_multi(*, fields=PROJECTION_VIEW, **kwargs):
