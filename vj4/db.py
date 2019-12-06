@@ -23,12 +23,9 @@ async def init():
                        host=options.db_host,
                        path='/' + options.db_name,
                        port=options.db_port,
-                       user=options.db_username,
-                       password=options.db_password,
+                       user=options.db_username if options.db_username else None,
+                       password=options.db_password if options.db_password else None,
                        query=query)
-  print(options.db_host, options.db_name, options.db_port, options.db_username, options.db_password)
-  print(query)
-  print(url)
   _client = await aiomongo.create_client(str(url))
   _db = _client.get_default_database()
 

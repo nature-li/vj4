@@ -124,14 +124,14 @@ async def check_password_by_uid(uid: int, password: str):
 
 
 @argmethod.wrap
-async def check_password_by_uname(uname: str, password: str, auto_upgrade: bool = False):
+async def check_password_by_uname(uname: str, password: str, auto_upgrade: bool=False):
   """Check password. Returns doc or None."""
   doc = await get_by_uname(uname, PROJECTION_ALL)
   if not doc:
     raise error.UserNotFoundError(uname)
   if pwhash.check(password, doc['salt'], doc['hash']):
     if auto_upgrade and pwhash.need_upgrade(doc['hash']) \
-            and validator.is_password(password):
+        and validator.is_password(password):
       await set_password(doc['_id'], password)
     return doc
 
@@ -178,8 +178,7 @@ async def change_password(uid: int, current_password: str, password: str):
 
 async def set_by_uid(uid, **kwargs):
   coll = db.coll('user')
-  doc = await coll.find_one_and_update(filter={'_id': uid}, update={'$set': kwargs},
-                                       return_document=ReturnDocument.AFTER)
+  doc = await coll.find_one_and_update(filter={'_id': uid}, update={'$set': kwargs}, return_document=ReturnDocument.AFTER)
   return doc
 
 
@@ -208,13 +207,13 @@ async def set_default(uid: int):
 
 
 @argmethod.wrap
-async def get_prefix_list(prefix: str, fields=PROJECTION_VIEW, limit: int = 50):
+async def get_prefix_list(prefix: str, fields=PROJECTION_VIEW, limit: int=50):
   prefix = prefix.lower()
   regex = r'\A\Q{0}\E'.format(prefix.replace(r'\E', r'\E\\E\Q'))
   coll = db.coll('user')
   udocs = await coll.find({'uname_lower': {'$regex': regex}}, projection=fields) \
-    .limit(limit) \
-    .to_list()
+                    .limit(limit) \
+                    .to_list()
   for udoc in builtin.USERS:
     if udoc['uname_lower'].startswith(prefix):
       udocs.append(udoc)
