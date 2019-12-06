@@ -32,7 +32,7 @@
     var UserContext = {{ handler.user_context|json|safe }};
   </script>
 </head>
-<body>
+<body class="nav--floating">
   {% block body %}{% endblock %}
   <!-- TODO: includes jQuery, JSON3, ES5-shim in the shim -->
   <!--[if lte IE 8]>

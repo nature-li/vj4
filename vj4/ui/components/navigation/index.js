@@ -42,23 +42,23 @@ class Navigation {
     this.floating = new MultipleStateContainer(this.updateFloating.bind(this), true);
     this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this), true);
     this.expanded = new MultipleStateContainer(this.updateExpandState.bind(this));
-    this.setFloating();
-    this.setLogoVisibility();
+    // this.setFloating();
+    // this.setLogoVisibility();
   }
 
-  setFloating() {
-    if (!this.$nav.hasClass('floating')) {
-      this.$nav.addClass('floating');
-    }
-
-    if (!this.$navShadow.hasClass('floating')) {
-      this.$navShadow.addClass('floating');
-    }
-
-    if (!$('body').hasClass('nav--floating')) {
-      $('body').addClass('nav--floating');
-    }
-  }
+  // setFloating() {
+  //   if (!this.$nav.hasClass('floating')) {
+  //     this.$nav.addClass('floating');
+  //   }
+  //
+  //   if (!this.$navShadow.hasClass('floating')) {
+  //     this.$navShadow.addClass('floating');
+  //   }
+  //
+  //   if (!$('body').hasClass('nav--floating')) {
+  //     $('body').addClass('nav--floating');
+  //   }
+  // }
 
   updateFloating(state) {
     // if (state) {
@@ -72,11 +72,11 @@ class Navigation {
     // }
   }
 
-  setLogoVisibility() {
-    if (!this.$nav.hasClass('showlogo')) {
-      this.$nav.addClass('showlogo')
-    }
-  }
+  // setLogoVisibility() {
+  //   if (!this.$nav.hasClass('showlogo')) {
+  //     this.$nav.addClass('showlogo');
+  //   }
+  // }
 
   updateLogoVisibility(state) {
     // if (state) {
