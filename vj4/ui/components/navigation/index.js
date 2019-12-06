@@ -39,28 +39,29 @@ class Navigation {
     this.$nav = $nav;
     this.$navRow = $nav.children('.row');
     this.$navShadow = $navShadow;
-    this.floating = new MultipleStateContainer(this.updateFloating.bind(this), true);
-    this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this), true);
+    this.floating = new MultipleStateContainer(this.updateFloating.bind(this));
+    this.logoVisible = new MultipleStateContainer(this.updateLogoVisibility.bind(this));
     this.expanded = new MultipleStateContainer(this.updateExpandState.bind(this));
     // this.setFloating();
     // this.setLogoVisibility();
   }
 
-  // setFloating() {
-  //   if (!this.$nav.hasClass('floating')) {
-  //     this.$nav.addClass('floating');
-  //   }
-  //
-  //   if (!this.$navShadow.hasClass('floating')) {
-  //     this.$navShadow.addClass('floating');
-  //   }
-  //
-  //   if (!$('body').hasClass('nav--floating')) {
-  //     $('body').addClass('nav--floating');
-  //   }
-  // }
+  setFloating() {
+    if (!this.$nav.hasClass('floating')) {
+      this.$nav.addClass('floating');
+    }
+
+    if (!this.$navShadow.hasClass('floating')) {
+      this.$navShadow.addClass('floating');
+    }
+
+    if (!$('body').hasClass('nav--floating')) {
+      $('body').addClass('nav--floating');
+    }
+  }
 
   updateFloating(state) {
+    this.setFloating();
     // if (state) {
     //   this.$nav.addClass('floating');
     //   this.$navShadow.addClass('floating');
@@ -72,13 +73,14 @@ class Navigation {
     // }
   }
 
-  // setLogoVisibility() {
-  //   if (!this.$nav.hasClass('showlogo')) {
-  //     this.$nav.addClass('showlogo');
-  //   }
-  // }
+  setLogoVisibility() {
+    if (!this.$nav.hasClass('showlogo')) {
+      this.$nav.addClass('showlogo');
+    }
+  }
 
   updateLogoVisibility(state) {
+    this.setLogoVisibility();
     // if (state) {
     //   this.$nav.addClass('showlogo');
     // } else {
